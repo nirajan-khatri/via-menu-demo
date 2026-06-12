@@ -1,0 +1,60 @@
+<main class="app-shell">
+
+  <!-- ───────── Left: Upload Panel ───────── -->
+  <aside class="panel-upload">
+
+    <div class="panel-upload__inner">
+
+      <!-- Drop zone card -->
+      <div class="drop-card"
+           [class.drop-card--active]="isDragging()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)">
+
+        <div class="drop-card__art">
+          <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+
+        <h2 class="drop-card__heading">Drop your menu JSON</h2>
+        <p class="drop-card__sub">or pick a file from your computer</p>
+
+        <input type="file" #fileInput hidden accept=".json,application/json"
+               (change)="onFileSelected($event)">
+
+        @if (!fileName()) {
+        <button class="btn-primary" (click)="fileInput.click()">
+          Choose File
+        </button>
+        }
+
+        @if (fileName()) {
+        <div class="upload-actions">
+          <div class="upload-status">
+            <span class="upload-status__dot"></span>
+            {{ fileName() }}
+          </div>
+          <button class="btn-ghost" (click)="clearMenu()">
+            Clear &amp; Upload New
+          </button>
+        </div>
+        }
+      </div>
+
+
+    </div>
+  </aside>
+
+  <!-- ───────── Right: Phone Preview ───────── -->
+  <section class="panel-preview">
+
+    <app-menu-display [menuData]="menuData()" />
+  </section>
+
+</main>

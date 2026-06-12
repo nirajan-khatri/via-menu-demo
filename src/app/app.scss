@@ -1,0 +1,271 @@
+@use "sass:color";
+
+// ============================================================
+// ============================================================
+$cream: #f5f0eb;
+$sand: #d9cfc3;
+$warm-white: #fffcf8;
+$stone: #8a7e72;
+$bark: #5c5148;
+$charcoal: #2c2c2c;
+$ink: #1a1a1a;
+$terracotta: #c2734c;
+$sage: #7a9a6d;
+$sage-soft: rgba(122, 154, 109, 0.10);
+
+$font-display: 'Playfair Display', Georgia, serif;
+$font-body: 'DM Sans', -apple-system, sans-serif;
+
+$ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+// ============================================================
+// Shell
+// ============================================================
+:host {
+  display: block;
+}
+
+.app-shell {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+// ============================================================
+// Left: Upload Panel
+// ============================================================
+.panel-upload {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: $warm-white;
+  overflow: hidden;
+
+  &__inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+}
+
+
+
+// ── Drop Card ────────────────────────────
+.drop-card {
+  background: $warm-white;
+  border: 2px dashed $sand;
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  text-align: center;
+  transition: all 0.3s $ease-smooth;
+  cursor: pointer;
+
+  &:hover {
+    border-color: color.adjust($sand, $lightness: -10%);
+    box-shadow: 0 8px 32px rgba($bark, 0.06);
+  }
+
+  &--active {
+    border-color: $terracotta;
+    background: rgba($terracotta, 0.02);
+    transform: scale(1.015);
+    box-shadow: 0 12px 40px rgba($terracotta, 0.10);
+
+    .drop-card__art {
+      color: $terracotta;
+      transform: translateY(-4px);
+    }
+  }
+
+  &__art {
+    color: $sand;
+    margin-bottom: 1.2rem;
+    transition: all 0.3s $ease-smooth;
+  }
+
+  &__heading {
+    font-family: $font-display;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $charcoal;
+    margin-bottom: 0.35rem;
+  }
+
+  &__sub {
+    font-size: 0.85rem;
+    color: $stone;
+    margin-bottom: 1.8rem;
+  }
+}
+
+// ── Buttons ──────────────────────────────
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 2.2rem;
+  border-radius: 14px;
+  border: none;
+  background: $charcoal;
+  color: white;
+  font-family: $font-body;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+
+  &:hover {
+    background: $ink;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.14);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid $sand;
+  border-radius: 10px;
+  padding: 0.5rem 1.4rem;
+  font-family: $font-body;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: $stone;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $bark;
+    border-color: color.adjust($sand, $lightness: -12%);
+    background: rgba($cream, 0.6);
+  }
+}
+
+// ── Upload Status ────────────────────────
+.upload-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1.25rem;
+}
+
+.upload-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 1.2rem;
+  border-radius: 100px;
+  background: $sage-soft;
+  color: color.adjust($sage, $lightness: -15%);
+  font-size: 0.82rem;
+  font-weight: 500;
+  animation: fadeUp 0.3s ease-out;
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: $sage;
+    animation: blink 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+
+
+// ============================================================
+// Right: Preview Panel
+// ============================================================
+.panel-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1.5rem 2rem 2rem;
+  background:
+    radial-gradient(ellipse at 25% 15%, rgba($terracotta, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 85%, rgba($sage, 0.03) 0%, transparent 50%),
+    linear-gradient(180deg, $cream 0%, color.adjust($cream, $lightness: -3%) 100%);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba($bark, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+
+
+}
+
+// ============================================================
+// Responsive
+// ============================================================
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .panel-upload {
+    padding: 2rem 1.5rem;
+  }
+
+  .panel-preview {
+    padding: 1.5rem 1rem 2rem;
+    min-height: 80vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .panel-upload__inner {
+    max-width: 100%;
+  }
+
+  .drop-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .drop-card__heading {
+    font-size: 1.1rem;
+  }
+}

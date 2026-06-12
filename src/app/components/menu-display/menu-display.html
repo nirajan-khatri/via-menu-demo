@@ -1,0 +1,144 @@
+<div class="phone-shell">
+
+  <div class="phone-frame">
+    <div class="hw-btn hw-btn--vol-up"></div>
+    <div class="hw-btn hw-btn--vol-down"></div>
+    <div class="hw-btn hw-btn--power"></div>
+
+    <div class="phone-screen">
+
+      @if (menuData()) {
+      <div class="status-bar"></div>
+      <div class="scroll-area" (scroll)="onScroll($event)">
+        <section class="hero">
+          <div class="hero__pattern"></div>
+          <div class="hero__body">
+            <h1 class="hero__title">{{ menuName() }}</h1>
+            <div class="hero__rule"></div>
+            @if (menuDescription()) {
+            <p class="hero__desc">{{ menuDescription() }}</p>
+            }
+          </div>
+        </section>
+        <nav class="cat-bar">
+          @for (page of sortedPages(); track page.dynamicPage.pageId; let i = $index) {
+          <button
+            [id]="'tab-' + page.dynamicPage.pageId"
+            class="cat-pill"
+            [class.cat-pill--on]="isActivePage(page.dynamicPage.pageId)"
+            (click)="scrollToPage(page.dynamicPage.pageId)">
+            {{ page.dynamicPage.title }}
+          </button>
+          }
+        </nav>
+        <div class="pages-container">
+          @for (page of sortedPages(); track page.dynamicPage.pageId) {
+          <div class="page-section" [id]="'page-' + page.dynamicPage.pageId">
+            <div class="page-header">
+              <h2 class="page-header__title">{{ page.dynamicPage.title }}</h2>
+            </div>
+            <div class="blocks">
+
+              @for (blockEntry of page.dynamicBlocks; track blockEntry.dynamicBlock.blockId) {
+          @switch (blockEntry.dynamicBlock.type) {
+          @case ('title') {
+          <div class="blk-title">
+            <h3 class="blk-title__text">{{ blockEntry.dynamicBlock.title }}</h3>
+          </div>
+          }
+          @case ('text') {
+          <div class="blk-text">
+            @if (blockEntry.dynamicBlock.title) {
+            <h4 class="blk-text__heading">{{ blockEntry.dynamicBlock.title }}</h4>
+            }
+            @if (blockEntry.dynamicBlock.description) {
+            <p class="blk-text__body" [innerHTML]="blockEntry.dynamicBlock.description"></p>
+            }
+          </div>
+          }
+          @case ('dish') {
+          <article class="dish">
+            <div class="dish__img-wrap">
+              @if (isValidImageUrl(blockEntry.dynamicBlock.image?.url) && !imageErrors[blockEntry.dynamicBlock.blockId]) {
+              <img
+                class="dish__img"
+                [src]="blockEntry.dynamicBlock.image!.url"
+                [alt]="blockEntry.dynamicBlock.image!.alt || blockEntry.dynamicBlock.title"
+                loading="lazy"
+                (error)="onImageError(blockEntry.dynamicBlock.blockId)" />
+              } @else {
+              <div class="dish__placeholder">
+                <span class="material-symbols-outlined">restaurant</span>
+              </div>
+              }
+            </div>
+            <div class="dish__info">
+              <div class="dish__row">
+                <h4 class="dish__name">{{ blockEntry.dynamicBlock.title }}</h4>
+                @if (blockEntry.dynamicBlock.price > 0) {
+                <span class="dish__price">
+                  {{ formatPrice(blockEntry.dynamicBlock.price, blockEntry.dynamicBlock.currency) }}
+                </span>
+                }
+              </div>
+              @if (blockEntry.dynamicBlock.description) {
+              <p class="dish__desc" [innerHTML]="blockEntry.dynamicBlock.description"></p>
+              }
+            </div>
+          </article>
+          }
+          @case ('separator') {
+          @if (parseSeparatorConfig(blockEntry.dynamicBlock.description); as config) {
+          <div class="blk-sep" [style.margin-top.px]="config.marginTop * 4" [style.margin-bottom.px]="config.marginBottom * 4">
+            <hr class="blk-sep__line"
+              [class.blk-sep__line--dashed]="config.style === 'dashed'"
+              [class.blk-sep__line--dotted]="config.style === 'dotted'"
+              [style.border-color]="config.color"
+              [style.width]="config.width === 'full' ? '100%' : config.customWidth + '%'" />
+          </div>
+          }
+          }
+          @case ('image') {
+          <div class="blk-img">
+            @if (isValidImageUrl(blockEntry.dynamicBlock.image?.url) && !imageErrors[blockEntry.dynamicBlock.blockId]) {
+            <img class="blk-img__photo"
+              [src]="blockEntry.dynamicBlock.image!.url"
+              [alt]="blockEntry.dynamicBlock.image!.alt || blockEntry.dynamicBlock.title"
+              loading="lazy"
+              (error)="onImageError(blockEntry.dynamicBlock.blockId)" />
+            } @else {
+            <div class="blk-img__empty">
+              <span class="material-symbols-outlined">image</span>
+            </div>
+            }
+            @if (blockEntry.dynamicBlock.title) {
+            <p class="blk-img__cap">{{ blockEntry.dynamicBlock.title }}</p>
+            }
+          </div>
+          }
+
+          }
+          }
+            </div>
+          </div>
+          }
+        </div>
+        <footer class="phone-footer"></footer>
+
+      </div>
+      <div class="home-bar"></div>
+
+      } @else {
+      <div class="empty">
+        <div class="empty__icon">
+          <span class="material-symbols-outlined">restaurant_menu</span>
+        </div>
+        <h3 class="empty__title">No Menu Loaded</h3>
+        <p class="empty__sub">Upload a JSON file to preview<br>your digital menu here</p>
+      </div>
+
+      }
+
+    </div>
+  </div>
+</div>
