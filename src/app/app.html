@@ -1,11 +1,7 @@
-<main class="app-shell">
-
-  <!-- ───────── Left: Upload Panel ───────── -->
-  <aside class="panel-upload">
+<main class="app-shell" [attr.data-mobile-tab]="mobileTab()">
+  <aside class="panel-upload" [class.panel--hidden]="mobileTab() !== 'upload'">
 
     <div class="panel-upload__inner">
-
-      <!-- Drop zone card -->
       <div class="drop-card"
            [class.drop-card--active]="isDragging()"
            (dragover)="onDragOver($event)"
@@ -29,7 +25,7 @@
                (change)="onFileSelected($event)">
 
         @if (!fileName()) {
-        <button class="btn-primary" (click)="fileInput.click()">
+        <button class="btn-primary" (click)="fileInput.value = ''; fileInput.click()">
           Choose File
         </button>
         }
@@ -40,7 +36,7 @@
             <span class="upload-status__dot"></span>
             {{ fileName() }}
           </div>
-          <button class="btn-ghost" (click)="clearMenu()">
+          <button class="btn-ghost" (click)="clearMenu(); mobileTab.set('upload')">
             Clear &amp; Upload New
           </button>
         </div>
@@ -50,11 +46,39 @@
 
     </div>
   </aside>
-
-  <!-- ───────── Right: Phone Preview ───────── -->
-  <section class="panel-preview">
+  <section class="panel-preview" [class.panel--hidden]="mobileTab() !== 'preview'">
 
     <app-menu-display [menuData]="menuData()" />
   </section>
+  <nav class="mobile-tab-bar">
+    <button
+      class="mobile-tab"
+      [class.mobile-tab--active]="mobileTab() === 'upload'"
+      (click)="mobileTab.set('upload')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <span>Upload</span>
+    </button>
+    <button
+      class="mobile-tab"
+      [class.mobile-tab--active]="mobileTab() === 'preview'"
+      (click)="mobileTab.set('preview')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="1.8"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+        <line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+      <span>Preview</span>
+      @if (menuData()) {
+      <span class="mobile-tab__dot"></span>
+      }
+    </button>
+  </nav>
 
 </main>

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { MenuDisplay } from './components/menu-display/menu-display';
 import { MenuData } from './models/menu.models';
 
@@ -9,9 +9,12 @@ import { MenuData } from './models/menu.models';
   styleUrl: './app.scss'
 })
 export class App {
+  @ViewChild('fileInput') fileInputRef?: ElementRef<HTMLInputElement>;
+
   fileName = signal<string>('');
   isDragging = signal<boolean>(false);
   menuData = signal<MenuData | null>(null);
+  mobileTab = signal<'upload' | 'preview'>('upload');
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -42,6 +45,9 @@ export class App {
   clearMenu() {
     this.menuData.set(null);
     this.fileName.set('');
+    if (this.fileInputRef?.nativeElement) {
+      this.fileInputRef.nativeElement.value = '';
+    }
   }
 
   private handleFile(file: File) {
@@ -57,9 +63,8 @@ export class App {
       try {
         const json = JSON.parse(e.target?.result as string);
         this.menuData.set(json as MenuData);
-        console.log('Menu data loaded successfully:', json);
+        this.mobileTab.set('preview');
       } catch (error) {
-        console.error('Error parsing JSON:', error);
         alert('Invalid JSON file format.');
         this.menuData.set(null);
       }

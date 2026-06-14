@@ -1,7 +1,5 @@
 @use "sass:color";
 
-// ============================================================
-// ============================================================
 $cream: #f5f0eb;
 $sand: #d9cfc3;
 $warm-white: #fffcf8;
@@ -17,32 +15,29 @@ $font-display: 'Playfair Display', Georgia, serif;
 $font-body: 'DM Sans', -apple-system, sans-serif;
 
 $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+$mobile-tab-h: 68px;
 
-// ============================================================
-// Shell
-// ============================================================
 :host {
   display: block;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .app-shell {
-  height: 100vh;
+  height: 100dvh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   overflow: hidden;
 }
 
-// ============================================================
-// Left: Upload Panel
-// ============================================================
 .panel-upload {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 3rem 2.5rem;
   background: $warm-white;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   &__inner {
     position: relative;
@@ -55,9 +50,6 @@ $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-
-
-// ── Drop Card ────────────────────────────
 .drop-card {
   background: $warm-white;
   border: 2px dashed $sand;
@@ -105,7 +97,6 @@ $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-// ── Buttons ──────────────────────────────
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -152,7 +143,6 @@ $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-// ── Upload Status ────────────────────────
 .upload-actions {
   display: flex;
   flex-direction: column;
@@ -172,8 +162,13 @@ $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 0.82rem;
   font-weight: 500;
   animation: fadeUp 0.3s ease-out;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   &__dot {
+    flex-shrink: 0;
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -183,46 +178,34 @@ $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes blink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
-
-
-// ============================================================
-// Right: Preview Panel
-// ============================================================
 .panel-preview {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 1.5rem 2rem 2rem;
+  align-items: stretch;
+  padding: 1.5rem 2rem;
   background:
     radial-gradient(ellipse at 25% 15%, rgba($terracotta, 0.04) 0%, transparent 50%),
     radial-gradient(ellipse at 75% 85%, rgba($sage, 0.03) 0%, transparent 50%),
     linear-gradient(180deg, $cream 0%, color.adjust($cream, $lightness: -3%) 100%);
   position: relative;
   overflow: hidden;
+
+  app-menu-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
 
   &::before {
     content: '';
@@ -233,39 +216,149 @@ $ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     background-size: 24px 24px;
     pointer-events: none;
   }
-
-
 }
 
-// ============================================================
-// Responsive
-// ============================================================
+.mobile-tab-bar {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .app-shell {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 1fr;
+    padding-bottom: calc(#{$mobile-tab-h} + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+
+  .panel-upload,
+  .panel-preview {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .panel--hidden {
+    display: none !important;
   }
 
   .panel-upload {
-    padding: 2rem 1.5rem;
-  }
+    padding: 0 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
 
-  .panel-preview {
-    padding: 1.5rem 1rem 2rem;
-    min-height: 80vh;
-  }
-}
-
-@media (max-width: 600px) {
-  .panel-upload__inner {
-    max-width: 100%;
+    &__inner {
+      max-width: 100%;
+      width: 100%;
+      gap: 1.5rem;
+    }
   }
 
   .drop-card {
     padding: 2rem 1.5rem;
+    border-radius: 20px;
+
+    &__heading {
+      font-size: 1.1rem;
+    }
+
+    &__sub {
+      font-size: 0.82rem;
+      margin-bottom: 1.4rem;
+    }
   }
 
-  .drop-card__heading {
-    font-size: 1.1rem;
+  .btn-primary {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.92rem;
+    border-radius: 14px;
+  }
+
+  .btn-ghost {
+    width: 100%;
+    text-align: center;
+    padding: 0.65rem 1.4rem;
+  }
+
+  .panel-preview {
+    padding: 0;
+    background: #faf7f3;
+    display: flex;
+    flex-direction: column;
+
+    app-menu-display {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    &::before { display: none; }
+  }
+
+  .mobile-tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(#{$mobile-tab-h} + env(safe-area-inset-bottom));
+    background: rgba($warm-white, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba($sand, 0.6);
+    z-index: 9999;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: none;
+    background: transparent;
+    color: $stone;
+    font-family: $font-body;
+    font-size: 0.7rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &--active {
+      color: $terracotta;
+
+      svg {
+        transform: translateY(-1px);
+      }
+    }
+
+    &__dot {
+      position: absolute;
+      top: 10px;
+      right: calc(50% - 18px);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $sage;
+    }
+  }
+}
+
+@media (max-width: 380px) {
+  .drop-card {
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
   }
 }
